@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="ProducerIntegrationTest" project="library-events-producer" tests="1" started="1" failures="0" errors="0" ignored="0">
+  <testsuite name="com.learn_kafa.Integration.producer.ProducerIntegrationTest" time="1.199" displayname="ProducerIntegrationTest" uniqueid="[engine:junit-jupiter]/[class:com.learn_kafa.Integration.producer.ProducerIntegrationTest]">
+    <testcase name="postLibraryEvent" classname="com.learn_kafa.Integration.producer.ProducerIntegrationTest" time="1.199" displayname="postLibraryEvent()" uniqueid="[engine:junit-jupiter]/[class:com.learn_kafa.Integration.producer.ProducerIntegrationTest]/[method:postLibraryEvent()]"/>
+  </testsuite>
+</testrun>

@@ -1,0 +1,5 @@
+package com.learn_kafa.producer;
+
+public class LibraryEventProducer {
+
+}

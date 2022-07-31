@@ -1,0 +1,57 @@
+package com.learn_kafa.Integration.producer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.test.context.EmbeddedKafka;
+
+import com.learn_kafa.domain.Book;
+import com.learn_kafa.domain.LibraryEvent;
+
+import lombok.extern.slf4j.Slf4j;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Slf4j
+@EmbeddedKafka(topics = {"library-events"},partitions = 3)
+public class ProducerIntegrationTest {
+
+	@Autowired
+	TestRestTemplate restTemplate;
+	
+	@Test
+	void postLibraryEvent()
+	{
+		  Book book = Book.builder()
+				          .bookId(111)
+				          .bookAuthor("APJ ABDUL KALAM")
+				          .bookName("Wings of fire")
+				          .build();
+		  
+		   LibraryEvent libraryEvent = LibraryEvent.builder()
+				                                   .libraryEventId(null)
+				                                   .book(book)
+				                                   .build();
+		   
+		   HttpHeaders headers = new HttpHeaders();
+		   headers.set("content-type", MediaType.APPLICATION_JSON.toString());
+		   HttpEntity<LibraryEvent> request = new HttpEntity<>(libraryEvent,headers);
+		   
+		   //when
+		   ResponseEntity<LibraryEvent> responseEntity = restTemplate.exchange("/v1/lib/", HttpMethod.POST,request,LibraryEvent.class);
+		 
+		 
+
+		   //then
+		   assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+	}
+	
+}

@@ -1,0 +1,5 @@
+package com.learn_kafa.domain;
+
+public class Book {
+
+}
