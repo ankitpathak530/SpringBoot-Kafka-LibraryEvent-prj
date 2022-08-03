@@ -1,5 +1,7 @@
 package com.learn_kafa.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,7 @@ public class LibraryEventsController {
 	
 	
 	@PostMapping("/lib/")
-	public ResponseEntity<LibraryEvent> postLibraryEven(@RequestBody LibraryEvent libraryEvent) throws JsonProcessingException{
+	public ResponseEntity<LibraryEvent> postLibraryEven(@RequestBody @Valid LibraryEvent libraryEvent) throws JsonProcessingException{
 
 		/* 
 		 * libraryEventProducer.sendLibraryEvent(libraryEvent);
@@ -34,7 +36,7 @@ public class LibraryEventsController {
 		 */
 		
 		//If it's new Book then set to NEW as LibararyEventType
-		
+		log.info("Library Event Controller called...");
 		libraryEvent.setLibraryEventType(LibraryEventType.NEW);
 		libraryEventProducer.sendLibraryEventApproach3(libraryEvent);
 	

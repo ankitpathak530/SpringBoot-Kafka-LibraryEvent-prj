@@ -1,5 +1,8 @@
 package com.learn_kafa.domain;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +18,9 @@ public class LibraryEvent {
 	
 	private Integer libraryEventId;
 	private LibraryEventType libraryEventType;
+	
+	@NotNull
+	@Valid
 	private Book book;
 	
 }

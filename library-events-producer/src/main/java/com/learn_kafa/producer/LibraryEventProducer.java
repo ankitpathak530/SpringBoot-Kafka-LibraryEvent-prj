@@ -63,7 +63,7 @@ public class LibraryEventProducer {
 	   *instance of kafka template.
 	   *
 	   */
-		public void sendLibraryEventApproach2(LibraryEvent libraryEvent) throws JsonProcessingException {
+		public ListenableFuture<SendResult<Integer, String>> sendLibraryEventApproach2(LibraryEvent libraryEvent) throws JsonProcessingException {
 			
 			Integer key = libraryEvent.getLibraryEventId();
 			String value = ojMapper.writeValueAsString(libraryEvent);
@@ -80,7 +80,7 @@ public class LibraryEventProducer {
 					handleFailure(key,value,ex);
 				}		
 		    });
-		
+		   return listenableFuture;
 		}
 		
 		
@@ -92,7 +92,7 @@ public class LibraryEventProducer {
 		 * This kafkaTemplate send method take ProducerRecord as argument
 		 */
 		public void sendLibraryEventApproach3(LibraryEvent libraryEvent) throws JsonProcessingException {
-
+		
 			Integer key = libraryEvent.getLibraryEventId();
 			String value = ojMapper.writeValueAsString(libraryEvent);
 
