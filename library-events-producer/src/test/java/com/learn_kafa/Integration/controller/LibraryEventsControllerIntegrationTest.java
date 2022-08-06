@@ -3,6 +3,7 @@ package com.learn_kafa.Integration.controller;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import java.util.Map;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
@@ -60,6 +62,8 @@ public class LibraryEventsControllerIntegrationTest {
 		embeddedKafkaBroker.consumeFromAllEmbeddedTopics(consumer);
 	}
 	
+	
+	
 	@AfterEach
 	void testDwon()
 	{
@@ -69,8 +73,8 @@ public class LibraryEventsControllerIntegrationTest {
 	
 	
 	@Test
-	@Timeout(3)
-	void postLibraryEvent() throws InterruptedException
+	@Order(1)
+	void postLibraryEventTest() throws InterruptedException
 	{
 		  Book book = Book.builder()
 				          .bookId(111)
@@ -95,9 +99,41 @@ public class LibraryEventsControllerIntegrationTest {
 		   //then
 		   assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 		   
+	}
+	
+	
+	
+	
+	
+	
+	@Test
+	@Order(2)
+	void postLibraryEventUpdateTest() throws InterruptedException
+	{
+		   Book book = Book.builder()
+		 		          .bookId(111)
+				          .bookAuthor("APJ ABDUL KALAM")
+				          .bookName("Wings of fire")
+				          .build();
+		  
+		   LibraryEvent libraryEvent = LibraryEvent.builder()
+		   		                                   .libraryEventId(123)
+		   	 	                                   .book(book)
+				                                   .build();
+		   
+		   HttpHeaders headers = new HttpHeaders();
+		   headers.set("content-type", MediaType.APPLICATION_JSON.toString());
+		  
+		   HttpEntity<LibraryEvent> request = new HttpEntity<>(libraryEvent,headers);
+		   
+		   
+		   ResponseEntity<LibraryEvent> responseEntity = restTemplate.exchange("/v1/lib/", HttpMethod.PUT,request,LibraryEvent.class);
+		 	
+		   assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+		   
 		   
 		   ConsumerRecord<Integer, String> consumerRecord = KafkaTestUtils.getSingleRecord(this.consumer, "library-events");
-		   String expectedValue = "{\"libraryEventId\":null,\"libraryEventType\":\"NEW\",\"book\":{\"bookId\":111,\"bookName\":\"Wings of fire\",\"bookAuthor\":\"APJ ABDUL KALAM\"}}";
+		   String expectedValue = "{\"libraryEventId\":123,\"libraryEventType\":\"UPDATE\",\"book\":{\"bookId\":111,\"bookName\":\"Wings of fire\",\"bookAuthor\":\"APJ ABDUL KALAM\"}}";
 		   String value = consumerRecord.value();
 		   assertEquals(expectedValue, value);
 	}
